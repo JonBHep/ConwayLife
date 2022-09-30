@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConwayLife", "ConwayLife\ConwayLife.csproj", "{73BA7217-46F6-428C-AC10-26C0C0360203}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73BA7217-46F6-428C-AC10-26C0C0360203}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73BA7217-46F6-428C-AC10-26C0C0360203}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73BA7217-46F6-428C-AC10-26C0C0360203}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73BA7217-46F6-428C-AC10-26C0C0360203}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
