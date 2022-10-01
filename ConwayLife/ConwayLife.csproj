@@ -9,4 +9,9 @@
         <NeutralLanguage>en-GB</NeutralLanguage>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Remove="ImmigrationCell.cs" />
+      <Compile Remove="QuadLifeCell.cs" />
+    </ItemGroup>
+
 </Project>

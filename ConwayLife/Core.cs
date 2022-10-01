@@ -29,10 +29,10 @@ public sealed class Core
 
         public static Core Instance => Instantiation; // this static property allows global access to the single private instance of classVerbaCore
 
-        public enum CellDisplayOptions { None, EverLive, Affected, Immigration, QuadLife};
+        public enum CellDisplayOptions { Life, EverLive, Affected, Immigration, QuadLife};
 
         private bool _wrapping;
-        private CellDisplayOptions _showwhat;
+        private CellDisplayOptions _showwhat= CellDisplayOptions.Life;
         private string _rulestring = "B3/S23";
 
         private readonly string _optionsfilespec;
@@ -177,7 +177,7 @@ public sealed class Core
                         else if (j.EndsWith("E"))
                         { _showwhat = CellDisplayOptions.EverLive; }
                         else
-                        { _showwhat = CellDisplayOptions.None; }
+                        { _showwhat = CellDisplayOptions.Life; }
                     }    
                 }
             }

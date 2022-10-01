@@ -17,9 +17,9 @@ namespace ConwayLife
             InitializeComponent();
             _cellule = new LifeCell[DimensionX, DimensionY];
             _square = new Rectangle[DimensionX, DimensionY];
-            for (int xx = 0; xx < DimensionX; xx++)
+            for (var xx = 0; xx < DimensionX; xx++)
             {
-                for (int yy = 0; yy < DimensionY; yy++)
+                for (var yy = 0; yy < DimensionY; yy++)
                 {
                     _cellule[xx, yy] = new LifeCell();
                     _square[xx, yy] = new Rectangle();
@@ -76,12 +76,12 @@ namespace ConwayLife
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            double scrX = SystemParameters.PrimaryScreenWidth;
-            double scrY = SystemParameters.PrimaryScreenHeight;
-            double winX = scrX * .98;
-            double winY = scrY * .94;
-            double xm = (scrX - winX) / 2;
-            double ym = (scrY - winY) / 4;
+            var scrX = SystemParameters.PrimaryScreenWidth;
+            var scrY = SystemParameters.PrimaryScreenHeight;
+            var winX = scrX * .98;
+            var winY = scrY * .94;
+            var xm = (scrX - winX) / 2;
+            var ym = (scrY - winY) / 4;
             Width = winX;
             Height = winY;
             Left = xm;
@@ -136,9 +136,9 @@ namespace ConwayLife
 
         private void ClearCells()
         {
-            for (int x = 0; x < DimensionX; x++)
+            for (var x = 0; x < DimensionX; x++)
             {
-                for (int y = 0; y < DimensionY; y++)
+                for (var y = 0; y < DimensionY; y++)
                 {
                     _cellule[x, y] = new LifeCell();
                     _square[x, y].Fill = Brushes.Ivory;
@@ -158,7 +158,7 @@ namespace ConwayLife
                 {
                     if (thing.CellValue(x, y))
                     {
-                        _cellule[oX + x, oY + y].Alive = true;
+                        _cellule[oX + x, oY + y].Awaken(Core.Instance.CellDisplay);
                     }
                 }
             }
@@ -169,14 +169,21 @@ namespace ConwayLife
         {
             ClearCells();
             textblockPattern.Text = "Random pattern";
-            Random rng = new Random();
+            var rng = new Random();
             if (grain >=0) { rng = new Random(grain); textblockPattern.Text = $"Random pattern [{grain}]"; }
-            for (int x = 0; x < DimensionX; x++)
+            for (var x = 0; x < DimensionX; x++)
             {
-                for (int y = 0; y < DimensionY; y++)
+                for (var y = 0; y < DimensionY; y++)
                 {
-                    bool q = (rng.NextDouble() > 0.8);
-                    _cellule[x, y].Alive = q;
+                    var q = (rng.NextDouble() > 0.8);
+                    if (q)
+                    {
+                        _cellule[x, y].Awaken(Core.Instance.CellDisplay);    
+                    }
+                    else
+                    {
+                        _cellule[x, y].Kill();
+                    }
                 }
             }
             InitialiseRun();
@@ -184,7 +191,19 @@ namespace ConwayLife
         
         private void AdvanceOneGeneration()
         {
-            Evolve(Core.Instance.RuleString);
+            if (Core.Instance.CellDisplay == Core.CellDisplayOptions.Immigration)
+            {
+                EvolveImmigration();
+            }
+            else if (Core.Instance.CellDisplay == Core.CellDisplayOptions.QuadLife)
+            {
+                EvolveQuadLife();
+            }
+            else
+            {
+                Evolve(Core.Instance.RuleString);    
+            }
+            
             DisplayPopulation();
         }
 
@@ -198,12 +217,12 @@ namespace ConwayLife
 
         private void PaintRed(int ox, int oy, PatternEnvelope envelop)
         {
-            for (int h = 0; h < envelop.FrameXDimension; h++)
+            for (var h = 0; h < envelop.FrameXDimension; h++)
             {
-                int hh = PositionOnBoard(ox + h, DimensionX);
-                for (int v = 0; v < envelop.FrameYDimension; v++)
+                var hh = PositionOnBoard(ox + h, DimensionX);
+                for (var v = 0; v < envelop.FrameYDimension; v++)
                 {
-                    int vv = PositionOnBoard(oy + v, DimensionY);
+                    var vv = PositionOnBoard(oy + v, DimensionY);
                     if (envelop.CellValue(h, v) == PatternEnvelope.liveCell) { _square[hh, vv].Fill = Brushes.Red; }
                 }
             }
@@ -212,26 +231,86 @@ namespace ConwayLife
         private void DisplayPopulation()
         {
             _population = 0;
-            for (int x = 0; x < DimensionX; x++)
+            for (var x = 0; x < DimensionX; x++)
             {
-                for (int y = 0; y < DimensionY; y++)
+                for (var y = 0; y < DimensionY; y++)
                 {
-                    if (_cellule[x, y].Alive)
+                    switch (Core.Instance.CellDisplay)
                     {
-                        _square[x, y].Fill = Brushes.DarkGreen;
-                        _population++;
-                    }
-                    else if (Core.Instance.CellDisplay == Core.CellDisplayOptions.EverLive && _cellule[x, y].EverBeen)
-                    {
-                        _square[x, y].Fill = _brushEverlive;
-                    }
-                    else if ((Core.Instance.CellDisplay== Core.CellDisplayOptions.Affected) && _cellule[x,y].Affected)
-                    {
-                        _square[x, y].Fill = _brushAffected;
-                    }
-                    else
-                    {
-                        _square[x, y].Fill = _brushBackground;
+                        case Core.CellDisplayOptions.Life:
+                        {
+                            if (_cellule[x, y].Alive)
+                            {
+                                _square[x, y].Fill = Brushes.DarkGreen;
+                                _population++;
+                            }
+                            else
+                            {
+                                _square[x, y].Fill = _brushBackground;        
+                            }
+                            break;
+                        }
+                        case Core.CellDisplayOptions.Affected:
+                        {
+                            if (_cellule[x, y].Alive)
+                            {
+                                _square[x, y].Fill = Brushes.DarkGreen;
+                                _population++;
+                            }
+                            else if ( _cellule[x, y].Touched)        
+                            {
+                                _square[x, y].Fill = _brushAffected;        
+                            }
+                            else
+                            {
+                                _square[x, y].Fill = _brushBackground;        
+                            }
+                            break;
+                        }
+                        case Core.CellDisplayOptions.EverLive:
+                        {
+                            if (_cellule[x, y].Alive)
+                            {
+                                _square[x, y].Fill = Brushes.DarkGreen;
+                                _population++;
+                            }
+                            else if ( _cellule[x, y].Touched)        
+                            {
+                                _square[x, y].Fill = _brushEverlive;        
+                            }
+                            else
+                            {
+                                _square[x, y].Fill = _brushBackground;        
+                            }
+                            break;
+                        }
+                        case Core.CellDisplayOptions.Immigration:
+                        {
+                            if (_cellule[x, y].Alive)
+                            {
+                                _square[x, y].Fill =ImmigrationBrush(_cellule[x,y].ColourValue);
+                                _population++;
+                            }
+                            else
+                            {
+                                _square[x, y].Fill = _brushBackground;        
+                            }
+                            break;
+                        }
+                        case Core.CellDisplayOptions.QuadLife:
+                        {
+                            if (_cellule[x, y].Alive)
+                            {
+                                _square[x, y].Fill =ImmigrationBrush(_cellule[x,y].ColourValue);
+                                _population++;
+                            }
+                            else
+                            {
+                                _square[x, y].Fill = _brushBackground;        
+                            }
+                            
+                            break;
+                        }
                     }
                 }
             }
@@ -240,13 +319,34 @@ namespace ConwayLife
             textblockGenChanges.Text = $"Changed cells {_genchanges}";
         }
 
+        private SolidColorBrush ImmigrationBrush(int v)
+        {
+            if (v == 1)
+            {
+                return new SolidColorBrush(Colors.Crimson);
+            }
+            if (v == 2)
+            {
+                return new SolidColorBrush(Colors.Blue);
+            }
+            if (v == 3)
+            {
+                return new SolidColorBrush(Colors.Magenta);
+            }
+            if (v == 4)
+            {
+                return new SolidColorBrush(Colors.ForestGreen);
+            }
+            return new SolidColorBrush(Colors.DimGray);
+        }
+        
         private void InitialiseSquares()
         {
-            for (int x = 0; x < DimensionX; x++)
+            for (var x = 0; x < DimensionX; x++)
             {
-                for (int y = 0; y < DimensionY; y++)
+                for (var y = 0; y < DimensionY; y++)
                 {
-                    Rectangle r = new Rectangle
+                    var r = new Rectangle
                     {
                         Width = Blocksize,
                         Height = Blocksize,
@@ -263,20 +363,20 @@ namespace ConwayLife
         private void Evolve(string rules)
         {
             // Interpret rule string
-            int p = rules.IndexOf('/');
+            var p = rules.IndexOf('/');
             if (p < 2) { throw new ArgumentException("Improper rule string"); }
             if (rules.Length < (p + 3)) { throw new ArgumentException("Improper rule string"); }
             if (rules[0] != 'B') { throw new ArgumentException("Improper rule string"); }
             if (rules[p + 1] != 'S') { throw new ArgumentException("Improper rule string"); }
             
-            string survivors = rules.Substring(p + 2);
-            string births = rules.Substring(1, p - 1);
+            var survivors = rules.Substring(p + 2);
+            var births = rules.Substring(1, p - 1);
 
-            for (int x = 0; x < DimensionX; x++)
+            for (var x = 0; x < DimensionX; x++)
             {
-                for (int y = 0; y < DimensionY; y++)
+                for (var y = 0; y < DimensionY; y++)
                 {
-                    if (_cellule[x, y].Affected)
+                    if (_cellule[x, y].Touched)
                     {
                         CountNeighbours(x, y); // The CountNeighbours method takes account of whether wrapping occurs or not
                     }
@@ -285,46 +385,300 @@ namespace ConwayLife
 
             // Amend cells according to number of neighbours
             _genchanges = 0;
-            for (int x = 0; x < DimensionX; x++)
+            for (var x = 0; x < DimensionX; x++)
             {
-                for (int y = 0; y < DimensionY; y++)
+                for (var y = 0; y < DimensionY; y++)
                 {
-                    if (_cellule[x, y].Affected)
+                    if (_cellule[x, y].Touched)
                     {
                         if (_cellule[x, y].Alive)
                         {
-                            if (!survivors.Contains(_cellule[x, y].Neighbours.ToString())) { _cellule[x, y].Alive = false; _genchanges++; MarkNeighbours(x, y); }
+                            if (!survivors.Contains(_cellule[x, y].Neighbours.ToString())) { _cellule[x, y].Kill();
+                                _genchanges++; MarkNeighbours(x, y); }
                         }
                         else
                         {
-                            if (births.Contains(_cellule[x, y].Neighbours.ToString())) { _cellule[x, y].Alive= true;
+                            if (births.Contains(_cellule[x, y].Neighbours.ToString())) { _cellule[x, y].Awaken(Core.Instance.CellDisplay);
                                 _genchanges++; MarkNeighbours(x, y); }
                         }
                     }
                 }
             }
-            for (int x = 0; x < DimensionX; x++)
+            for (var x = 0; x < DimensionX; x++)
             {
-                for (int y = 0; y < DimensionY; y++)
+                for (var y = 0; y < DimensionY; y++)
                 {
-                    _cellule[x, y].Affected =_cellule[x, y].AffectedNow;
+                    _cellule[x, y].Touched =_cellule[x, y].AffectedNow;
                     _cellule[x, y].AffectedNow = false;
                 }
             }
             _generation++;
         }
-
-        private void CountNeighbours(int px, int py)
+        private void EvolveImmigration()
         {
-            int voisins = 0;
+            int bestColour = 0;
+            for (var x = 0; x < DimensionX; x++)
+            {
+                for (var y = 0; y < DimensionY; y++)
+                {
+                    if (_cellule[x, y].Touched)
+                    {
+                        CountNeighboursImmigration(x, y, out bestColour); // The CountNeighbours method takes account of whether wrapping occurs or not
+                    }
+                }
+            }
+
+            // Amend cells according to number of neighbours
+            _genchanges = 0;
+            for (var x = 0; x < DimensionX; x++)
+            {
+                for (var y = 0; y < DimensionY; y++)
+                {
+                    if (_cellule[x, y].Touched)
+                    {
+                        if (_cellule[x, y].Alive)
+                        {
+                            if (_cellule[x, y].Neighbours is not (2 or 3)) 
+                            {
+                                _cellule[x, y].Kill();
+                                _genchanges++; 
+                                MarkNeighbours(x, y); 
+                            }
+                        }
+                        else
+                        {
+                            if (_cellule[x, y].Neighbours==3) 
+                            {
+                                _cellule[x, y].Awaken(bestColour);
+                                _genchanges++;
+                                MarkNeighbours(x, y); 
+                            }
+                        }
+                    }
+                }
+            }
+            for (var x = 0; x < DimensionX; x++)
+            {
+                for (var y = 0; y < DimensionY; y++)
+                {
+                    _cellule[x, y].Touched =_cellule[x, y].AffectedNow;
+                    _cellule[x, y].AffectedNow = false;
+                }
+            }
+            _generation++;
+        }
+        
+        private void EvolveQuadLife()
+        {
+            int choiceColour = 0;
+            for (var x = 0; x < DimensionX; x++)
+            {
+                for (var y = 0; y < DimensionY; y++)
+                {
+                    if (_cellule[x, y].Touched)
+                    {
+                        CountNeighboursQuadLife(x, y, out choiceColour); // The CountNeighbours method takes account of whether wrapping occurs or not
+                    }
+                }
+            }
+
+            // Amend cells according to number of neighbours
+            _genchanges = 0;
+            for (var x = 0; x < DimensionX; x++)
+            {
+                for (var y = 0; y < DimensionY; y++)
+                {
+                    if (_cellule[x, y].Touched)
+                    {
+                        if (_cellule[x, y].Alive)
+                        {
+                            if (_cellule[x, y].Neighbours is not (2 or 3)) 
+                            {
+                                _cellule[x, y].Kill();
+                                _genchanges++; 
+                                MarkNeighbours(x, y); 
+                            }
+                        }
+                        else
+                        {
+                            if (_cellule[x, y].Neighbours==3) 
+                            {
+                                _cellule[x, y].Awaken(choiceColour);
+                                _genchanges++;
+                                MarkNeighbours(x, y); 
+                            }
+                        }
+                    }
+                }
+            }
+            for (var x = 0; x < DimensionX; x++)
+            {
+                for (var y = 0; y < DimensionY; y++)
+                {
+                    _cellule[x, y].Touched =_cellule[x, y].AffectedNow;
+                    _cellule[x, y].AffectedNow = false;
+                }
+            }
+            _generation++;
+        }
+        
+        private void CountNeighboursImmigration(int px, int py, out int majorityTint)
+        {
+            var voisins = 0;
+            var colourCount = new int[3];
+            
             // Examine the cells adjacent to (but not including) [x, y] (wrapping if necessary)
             if (Core.Instance.Wrapping)
             {
-                for (int dx = px - 1; dx <= px + 1; dx++)
+                for (var dx = px - 1; dx <= px + 1; dx++)
                 {
                     var xx = PositionOnBoard(dx, DimensionX);
                     {
-                        for (int dy = py - 1; dy <= py + 1; dy++)
+                        for (var dy = py - 1; dy <= py + 1; dy++)
+                        {
+                            var yy = PositionOnBoard(dy, DimensionY);
+                            {
+                                if (!((dx == px) && (dy == py)))
+                                {
+                                    if (_cellule[xx, yy].Alive)
+                                    {
+                                        voisins++;
+                                        colourCount[_cellule[xx, yy].ColourValue]++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (var dx = px - 1; dx <= px + 1; dx++)
+                {
+                    if (IsOnBoard(dx, DimensionX))
+                    {
+                        for (var dy = py - 1; dy <= py + 1; dy++)
+                        {
+                            if (IsOnBoard(dy, DimensionY))
+                            {
+                                if (!((dx == px) && (dy == py)))
+                                {
+                                    if (_cellule[dx, dy].Alive) { voisins++;colourCount[_cellule[dx, dy].ColourValue]++;}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _cellule[px, py].Neighbours = voisins;
+            if (colourCount[1] > colourCount[2])
+            {
+                majorityTint = 1;
+            }
+            else
+            {
+                majorityTint = 2;
+            }
+        }
+        
+        private void CountNeighboursQuadLife(int px, int py, out int chosenTint)
+        {
+            var voisins = 0;
+            var colourCount = new int[5];
+            
+            // Examine the cells adjacent to (but not including) [x, y] (wrapping if necessary)
+            if (Core.Instance.Wrapping)
+            {
+                for (var dx = px - 1; dx <= px + 1; dx++)
+                {
+                    var xx = PositionOnBoard(dx, DimensionX);
+                    {
+                        for (var dy = py - 1; dy <= py + 1; dy++)
+                        {
+                            var yy = PositionOnBoard(dy, DimensionY);
+                            {
+                                if (!((dx == px) && (dy == py)))
+                                {
+                                    if (_cellule[xx, yy].Alive)
+                                    {
+                                        voisins++;
+                                        colourCount[_cellule[xx, yy].ColourValue]++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (var dx = px - 1; dx <= px + 1; dx++)
+                {
+                    if (!IsOnBoard(dx, DimensionX)) continue;
+                    for (var dy = py - 1; dy <= py + 1; dy++)
+                    {
+                        if (IsOnBoard(dy, DimensionY))
+                        {
+                            if ((dx == px) && (dy == py)) continue;
+                            if (!_cellule[dx, dy].Alive) continue;
+                            voisins++; 
+                            colourCount[_cellule[dx, dy].ColourValue]++;
+                        }
+                    }
+                }
+            }
+            _cellule[px, py].Neighbours = voisins;
+            
+            var singles = 0;
+            var other = 0;
+            var majority = 1;
+            for (var a = 1; a < 5; a++)
+            {
+                if (colourCount[a] == 1)
+                {
+                    singles++;
+                }
+                else
+                {
+                    other = a;
+                }
+
+                if (colourCount[a] > colourCount[majority])
+                {
+                    majority = a;
+                }
+            }
+
+            // three colours the same - take the fourth (otherwise take the majority colour)
+            if (voisins == 3)
+            {
+                if (singles == 3)
+                {
+                    chosenTint = other;
+                }
+                else
+                {
+                    chosenTint = majority;
+                }
+            }
+            else
+            {
+                chosenTint = 0;
+            }
+            // TODO Immigration works but QuadLife doesn't
+        }
+        
+        private void CountNeighbours(int px, int py)
+        {
+            var voisins = 0;
+            // Examine the cells adjacent to (but not including) [x, y] (wrapping if necessary)
+            if (Core.Instance.Wrapping)
+            {
+                for (var dx = px - 1; dx <= px + 1; dx++)
+                {
+                    var xx = PositionOnBoard(dx, DimensionX);
+                    {
+                        for (var dy = py - 1; dy <= py + 1; dy++)
                         {
                             var yy = PositionOnBoard(dy, DimensionY);
                             {
@@ -339,11 +693,11 @@ namespace ConwayLife
             }
             else
             {
-                for (int dx = px - 1; dx <= px + 1; dx++)
+                for (var dx = px - 1; dx <= px + 1; dx++)
                 {
                     if (IsOnBoard(dx, DimensionX))
                     {
-                        for (int dy = py - 1; dy <= py + 1; dy++)
+                        for (var dy = py - 1; dy <= py + 1; dy++)
                         {
                             if (IsOnBoard(dy, DimensionY))
                             {
@@ -364,11 +718,11 @@ namespace ConwayLife
             // Mark the cells adjacent to and including [x, y] (wrapping if necessary) as affected now
             if (Core.Instance.Wrapping)
             {
-                for (int dx = px - 1; dx <= px + 1; dx++)
+                for (var dx = px - 1; dx <= px + 1; dx++)
                 {
                     var xx = PositionOnBoard(dx, DimensionX);
                     {
-                        for (int dy = py - 1; dy <= py + 1; dy++)
+                        for (var dy = py - 1; dy <= py + 1; dy++)
                         {
                             var yy = PositionOnBoard(dy, DimensionY);
                             {
@@ -380,11 +734,11 @@ namespace ConwayLife
             }
             else
             {
-                for (int dx = px - 1; dx <= px + 1; dx++)
+                for (var dx = px - 1; dx <= px + 1; dx++)
                 {
                     if (IsOnBoard(dx, DimensionX))
                     {
-                        for (int dy = py - 1; dy <= py + 1; dy++)
+                        for (var dy = py - 1; dy <= py + 1; dy++)
                         {
                             if (IsOnBoard(dy, DimensionY))
                             {
@@ -444,11 +798,11 @@ namespace ConwayLife
 
         private void InitialiseAffectedCells()
         {
-            for (int x = 0; x < DimensionX; x++)
+            for (var x = 0; x < DimensionX; x++)
             {
-                for (int y = 0; y < DimensionY; y++)
+                for (var y = 0; y < DimensionY; y++)
                 {
-                    _cellule[x, y].Affected = true;
+                    _cellule[x, y].Touched = true;
                     _cellule[x, y].AffectedNow = false;
                 }
             }
@@ -461,7 +815,7 @@ namespace ConwayLife
 
         private void mnuGameOptions_Click(object sender, RoutedEventArgs e)
         {
-            OptionsWindow w = new OptionsWindow
+            var w = new OptionsWindow
             {
                 Owner = this
             };
@@ -471,8 +825,8 @@ namespace ConwayLife
 
         private void mnuObjectRandom_Click(object sender, RoutedEventArgs e)
         {
-            Random rng = new Random();
-            int seed = rng.Next();
+            var rng = new Random();
+            var seed = rng.Next();
             DoRandom(seed);
         }
         
@@ -483,7 +837,7 @@ namespace ConwayLife
 
         private void mnuObjectCreate_Click(object sender, RoutedEventArgs e)
         {
-            ObjectEditor w = new ObjectEditor
+            var w = new ObjectEditor
             {
                 Owner = this
             };
@@ -526,32 +880,32 @@ namespace ConwayLife
 
         private void mnuObjectSelect_Click(object sender, RoutedEventArgs e)
         {
-            ObjectSelectWindow w = new ObjectSelectWindow
+            var w = new ObjectSelectWindow
             {
                 Owner = this
             };
             if (w.ShowDialog() == false) { return; }
-            string objectKey = w.SelectedKey;
-            Shape? thing = Core.Instance.ObjectForKey(objectKey);
+            var objectKey = w.SelectedKey;
+            var thing = Core.Instance.ObjectForKey(objectKey);
             if (thing is { })
             {
-                int xp = (DimensionX - thing.Width) / 2;
-                int yp = (DimensionY - thing.Height) / 2;
+                var xp = (DimensionX - thing.Width) / 2;
+                var yp = (DimensionY - thing.Height) / 2;
                 DrawObject(thing, xp, yp);
             }
         }
 
         private void mnuObjectEdit_Click(object sender, RoutedEventArgs e)
         {
-            ObjectSelectWindow wos = new ObjectSelectWindow
+            var wos = new ObjectSelectWindow
             {
                 Owner = this
             };
             if (wos.ShowDialog() == false) { return; }
-            string objectKey = wos.SelectedKey;
+            var objectKey = wos.SelectedKey;
             // Shape thing = Core.Instance.ObjectForKey(objectKey);
 
-            ObjectEditor woe = new ObjectEditor(objectKey)
+            var woe = new ObjectEditor(objectKey)
             {
                 Owner = this
             };
@@ -592,7 +946,7 @@ namespace ConwayLife
 
         private void mnuObjectRleImport_Click(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog
+            var ofd = new Microsoft.Win32.OpenFileDialog
             {
                 CheckFileExists = true,
                 Filter = "Run Length Encoding files (*.rle)|*.rle"
@@ -604,15 +958,15 @@ namespace ConwayLife
                 Title = "Import object from RLE"
             };
             if (ofd.ShowDialog() != true) { return; }
-            string rleFile = ofd.FileName;
-            Shape? thing = Core.Instance.LoadPatternFromRleFile(rleFile);
+            var rleFile = ofd.FileName;
+            var thing = Core.Instance.LoadPatternFromRleFile(rleFile);
             if (thing == null)
             {
                 MessageBox.Show("Error importing object from RLE file", "Game of Life", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
-                ObjectEditor woe = new ObjectEditor(thing)
+                var woe = new ObjectEditor(thing)
                 {
                     Owner = this
                 };
@@ -626,7 +980,7 @@ namespace ConwayLife
         {
             listboxStillLives.Items.Clear();
             Core.Instance.DoBuildStillLifeList();
-            foreach (StillLife slf in Core.Instance.StillLifes)
+            foreach (var slf in Core.Instance.StillLifes)
             {
                 //for(int o = 0; o < slf.VariantCount; o++)
                 //{
@@ -637,9 +991,9 @@ namespace ConwayLife
 
         private Canvas StillLifeCanvas(StillLife sl, int ver)
         {
-            Pattern p = sl.Variant[ver];
-            int patternmargin = 100;
-            Canvas cvs = new Canvas
+            var p = sl.Variant[ver];
+            var patternmargin = 100;
+            var cvs = new Canvas
             {
                 Width = 160,
                 Height = Math.Max(32, 12 + 6 * p.YDimension)
@@ -647,7 +1001,7 @@ namespace ConwayLife
                 Background = Brushes.AliceBlue
             };
 
-            TextBlock tb = new TextBlock
+            var tb = new TextBlock
             {
                 TextWrapping = TextWrapping.Wrap,
                 Width = patternmargin-3
@@ -660,11 +1014,11 @@ namespace ConwayLife
             Canvas.SetTop(tb, 6);
             cvs.Children.Add(tb);
 
-            Rectangle[,] sq = new Rectangle[p.XDimension, p.YDimension];
+            var sq = new Rectangle[p.XDimension, p.YDimension];
             
-            for (int h = 0; h < p.XDimension; h++)
+            for (var h = 0; h < p.XDimension; h++)
             {
-                for (int v = 0; v < p.YDimension; v++)
+                for (var v = 0; v < p.YDimension; v++)
                 {
                     sq[h, v] = new Rectangle
                     {
@@ -673,7 +1027,7 @@ namespace ConwayLife
                         ,
                         Stroke = Brushes.CornflowerBlue
                     };
-                    char q = p.Code[p.XDimension * v + h];
+                    var q = p.Code[p.XDimension * v + h];
                     if (q.Equals('O'))
                     {
                         sq[h, v].Fill = Brushes.SteelBlue;
@@ -703,24 +1057,24 @@ namespace ConwayLife
             buttonRun.IsEnabled = false;
             buttonStep.IsEnabled = false;
             UiServices.SetBusyState();
-            int[] slcount = new int[1 + Core.Instance.StillLifes.Count];
+            var slcount = new int[1 + Core.Instance.StillLifes.Count];
 
-            foreach (StillLife slf in Core.Instance.StillLifes)
+            foreach (var slf in Core.Instance.StillLifes)
             {
                 slcount[slf.SerialNumber] = 0;
             }
 
-            for (int h = 0; h < DimensionX; h++)
+            for (var h = 0; h < DimensionX; h++)
             {
-                for (int v = 0; v < DimensionY; v++)
+                for (var v = 0; v < DimensionY; v++)
                 {
                     var ticked = false;
-                    foreach (StillLife slf in Core.Instance.StillLifes)
+                    foreach (var slf in Core.Instance.StillLifes)
                     {
-                        for (int vnt = 0; vnt < slf.VariantCount; vnt++)
+                        for (var vnt = 0; vnt < slf.VariantCount; vnt++)
                         {
-                            PatternEnvelope env = new PatternEnvelope(slf.Variant[vnt]);
-                            Pattern? p = PutativePattern(h, v, env.FrameXDimension, env.FrameYDimension);
+                            var env = new PatternEnvelope(slf.Variant[vnt]);
+                            var p = PutativePattern(h, v, env.FrameXDimension, env.FrameYDimension);
                             if (p is{})
                             {
                                 if (env.IsCompatibleWith(p))
@@ -738,10 +1092,10 @@ namespace ConwayLife
                     }
                 }
             }
-            string msg = "Common Still Lifes:\n";
-            foreach (StillLife slf in Core.Instance.StillLifes)
+            var msg = "Common Still Lifes:\n";
+            foreach (var slf in Core.Instance.StillLifes)
             {
-                int q = slf.SerialNumber;
+                var q = slf.SerialNumber;
                 if (slcount[q] > 0)
                 {
                     msg += "\n";
@@ -760,12 +1114,12 @@ namespace ConwayLife
             // Copy the pattern with top left at [ox, oy] and dimensions dx * dy
             if (Core.Instance.Wrapping)
             {
-                string code = string.Empty;
-                for (int y = 0; y < dy; y++)
+                var code = string.Empty;
+                for (var y = 0; y < dy; y++)
                 {
                     var yy = PositionOnBoard(oy + y, DimensionY);
                     {
-                        for (int x = 0; x < dx; x++)
+                        for (var x = 0; x < dx; x++)
                         {
                             var xx = PositionOnBoard(ox + x, DimensionX);
                             {
@@ -774,18 +1128,18 @@ namespace ConwayLife
                         }
                     }
                 }
-                Pattern putain = new Pattern(dx, dy, code);
+                var putain = new Pattern(dx, dy, code);
                 return putain;
             }
             else
             {
-                string code = string.Empty;
-                bool overboard = false;
-                for (int y = 0; y < dy; y++)
+                var code = string.Empty;
+                var overboard = false;
+                for (var y = 0; y < dy; y++)
                 {
                     if (IsOnBoard(oy + y, DimensionY))
                     {
-                        for (int x = 0; x < dx; x++)
+                        for (var x = 0; x < dx; x++)
                         {
                             if (IsOnBoard(ox + x, DimensionX))
                             {

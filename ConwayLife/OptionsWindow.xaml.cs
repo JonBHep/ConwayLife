@@ -39,7 +39,7 @@ public partial class OptionsWindow
         }
         else
         {
-            Core.Instance.CellDisplay = Core.CellDisplayOptions.None;
+            Core.Instance.CellDisplay = Core.CellDisplayOptions.Life;
         }
 
         if (ConwayRadioButton.IsChecked.HasValue && ConwayRadioButton.IsChecked.Value)
