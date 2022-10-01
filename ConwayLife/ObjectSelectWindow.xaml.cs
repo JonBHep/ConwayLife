@@ -34,16 +34,16 @@ public partial class ObjectSelectWindow
     {
         InitialiseSquares();
 
-        buttonSelect.IsEnabled = false;
-        buttonDelete.IsEnabled = false;
-        treeviewObjects.Items.Clear();
+        ButtonSelect.IsEnabled = false;
+        ButtonDelete.IsEnabled = false;
+        TreeViewObjects.Items.Clear();
         var groups = Core.Instance.ListOfGroups();
         foreach (var grp in groups)
         {
             var tvi = new TreeViewItem();
             tvi.Header = grp;
             tvi.Tag = null;
-            treeviewObjects.Items.Add(tvi);
+            TreeViewObjects.Items.Add(tvi);
         }
 
         foreach (var key in Core.Instance.ListOfKeys())
@@ -59,7 +59,7 @@ public partial class ObjectSelectWindow
             it.GroupName = thing.Kind;
 
             var grpItem = new TreeViewItem();
-            foreach (TreeViewItem itm in treeviewObjects.Items)
+            foreach (TreeViewItem itm in TreeViewObjects.Items)
             {
                 if (itm.Header is string g)
                 {
@@ -79,7 +79,7 @@ public partial class ObjectSelectWindow
 
     private void buttonDelete_Click(object sender, RoutedEventArgs e)
     {
-        if (treeviewObjects.SelectedItem is TreeViewItem item)
+        if (TreeViewObjects.SelectedItem is TreeViewItem item)
         {
             if (item.Tag is ListedItem listed)
             {
@@ -98,7 +98,7 @@ public partial class ObjectSelectWindow
 
     private void buttonSelect_Click(object sender, RoutedEventArgs e)
     {
-        if (treeviewObjects.SelectedItem is TreeViewItem selection)
+        if (TreeViewObjects.SelectedItem is TreeViewItem selection)
         {
             if (selection.Tag is ListedItem it)
             {
@@ -110,12 +110,12 @@ public partial class ObjectSelectWindow
 
     private void treeviewObjects_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
-        if (treeviewObjects.SelectedItem is TreeViewItem selection)
+        if (TreeViewObjects.SelectedItem is TreeViewItem selection)
         {
             if (selection.Tag is ListedItem item)
             {
-                buttonDelete.IsEnabled = true;
-                buttonSelect.IsEnabled = true;
+                ButtonDelete.IsEnabled = true;
+                ButtonSelect.IsEnabled = true;
                 var thing = Core.Instance.ObjectForKey(item.ObjectKey);
                 if (thing is { })
                 {
@@ -125,8 +125,8 @@ public partial class ObjectSelectWindow
         }
         else
         {
-            buttonDelete.IsEnabled = false;
-            buttonSelect.IsEnabled = false;
+            ButtonDelete.IsEnabled = false;
+            ButtonSelect.IsEnabled = false;
         }
     }
 
@@ -178,7 +178,7 @@ public partial class ObjectSelectWindow
                 r.Fill = Brushes.Ivory;
                 Canvas.SetLeft(r, x * 6 + 8);
                 Canvas.SetTop(r, y * 6 + 8);
-                canvasShow.Children.Add(r);
+                CanvasShow.Children.Add(r);
                 square[x, y] = r;
             }
         }

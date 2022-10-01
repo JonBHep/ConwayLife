@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:ConwayLife"
         mc:Ignorable="d"
         Title="Object Selection" Height="700" Width="1100" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ContentRendered="Window_ContentRendered">
     <Grid>
@@ -16,17 +15,13 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TreeView x:Name="treeviewObjects" Background="Linen" SelectedItemChanged="treeviewObjects_SelectedItemChanged" FontFamily="Consolas">
-                
-            </TreeView>
-            <Canvas x:Name="canvasShow" Background="Ivory" Grid.Column="1">
-                
-            </Canvas>
+            <TreeView x:Name="TreeViewObjects" Background="Linen" SelectedItemChanged="treeviewObjects_SelectedItemChanged" FontFamily="Consolas"/>
+            <Canvas x:Name="CanvasShow" Background="Ivory" Grid.Column="1"/>
         </Grid>
         <StackPanel Orientation="Horizontal" Grid.Row="1">
-            <Button x:Name="buttonSelect" Margin="4" Padding="8 3" MinWidth="60" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="buttonSelect_Click">Select</Button>
-            <Button x:Name="buttonDelete" Margin="4" Padding="8 3" MinWidth="60" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="buttonDelete_Click">Delete</Button>
-            <Button x:Name="buttonCancel" Margin="4" Padding="8 3" MinWidth="60" VerticalAlignment="Center" VerticalContentAlignment="Center" IsCancel="True">Cancel</Button>
+            <Button x:Name="ButtonSelect" Margin="4" Padding="8 3" MinWidth="60" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="buttonSelect_Click">Select</Button>
+            <Button x:Name="ButtonDelete" Margin="4" Padding="8 3" MinWidth="60" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="buttonDelete_Click">Delete</Button>
+            <Button x:Name="ButtonCancel" Margin="4" Padding="8 3" MinWidth="60" VerticalAlignment="Center" VerticalContentAlignment="Center" IsCancel="True">Cancel</Button>
         </StackPanel>
     </Grid>
 </Window>

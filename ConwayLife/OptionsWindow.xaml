@@ -3,42 +3,57 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:ConwayLife"
         mc:Ignorable="d"
-        Title="Game of Life - Options" Height="600" Width="400" WindowStartupLocation="CenterOwner" Topmost="True" ResizeMode="NoResize" ContentRendered="Window_ContentRendered">
-    <Grid>
-        
+        Title="Game of Life - Options" Height="500" Width="800" WindowStartupLocation="CenterOwner" Topmost="True" SizeToContent= "WidthAndHeight"
+        ResizeMode="NoResize" ContentRendered="Window_ContentRendered" FontFamily="Liberation Mono" AllowsTransparency="True" Background="Transparent" WindowStyle="None">
+    <Border Background="Bisque" CornerRadius="6" BorderBrush="Sienna" BorderThickness="1">
+    <Grid Margin="16">
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="60"/>
-            <RowDefinition Height="60"/>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="120"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
         
-        <StackPanel Grid.Row="1" VerticalAlignment="Stretch">
-            <TextBlock VerticalAlignment="Top" FontWeight="Medium">Wrapping</TextBlock>
-            <RadioButton x:Name="radiobuttonWrap" IsChecked="True" >Wrap screen</RadioButton>
-            <RadioButton x:Name="radiobuttonNoWrap" >Do not wrap screen</RadioButton>
-        </StackPanel>
+        <TextBlock FontSize="16" Foreground="SaddleBrown">Game of Life Options</TextBlock>
         
-        <StackPanel Grid.Row="2" VerticalAlignment="Stretch">
-            <TextBlock VerticalAlignment="Top" FontWeight="Medium">Cell display options</TextBlock>
-            <RadioButton x:Name="radiobuttonEver" >Highlight cells that have ever been live</RadioButton>
-            <RadioButton x:Name="radiobuttonAffected" >Highlight neighbours of just-changed cells</RadioButton>
-            <RadioButton x:Name="radiobuttonNone" IsChecked="True">No highlight</RadioButton>
+        <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
+            <TextBlock FontSize="14" VerticalAlignment="Top" Foreground="SaddleBrown">Wrapping</TextBlock>
+            <RadioButton x:Name="WrapRadioButton" IsChecked="True" >Wrap screen</RadioButton>
+            <RadioButton x:Name="NoWrapRadioButton">Do not wrap screen</RadioButton>
         </StackPanel>
 
-        <StackPanel Grid.Row="3" VerticalAlignment="Stretch">
-            <TextBlock VerticalAlignment="Top" FontWeight="Medium">Rules</TextBlock>
-            <RadioButton x:Name="radiobuttonConway" IsChecked="True">Conway's Game of Life (B3/S23)</RadioButton>
-            <RadioButton x:Name="radiobuttonHighLife">HighLife (B36/S23)</RadioButton>
+        <StackPanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Stretch">
+            <TextBlock FontSize="14" VerticalAlignment="Top" Foreground="SaddleBrown">Rules</TextBlock>
+            <RadioButton x:Name="ConwayRadioButton" IsChecked="True">Conway's Game of Life (B3/S23)</RadioButton>
+            <RadioButton x:Name="HighLifeRadioButton">HighLife (B36/S23)</RadioButton>
         </StackPanel>
         
-        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="4">
-            <Button x:Name="buttonOkay" Margin="4" Width="80" Height="24" VerticalAlignment="Top" Click="buttonOkay_Click" >OK</Button>
-            <Button x:Name="buttonCancel" Margin="4" Width="80" Height="24" VerticalAlignment="Top" IsCancel="True" >Cancel</Button>
+        <StackPanel Grid.Row="3" Grid.Column="0" VerticalAlignment="Stretch">
+            <TextBlock FontSize="14" VerticalAlignment="Top"  Foreground="SaddleBrown">Cell display options</TextBlock>
+            <RadioButton x:Name="EverRadioButton" >Highlight cells that have ever been live</RadioButton>
+            <RadioButton x:Name="AffectedRadioButton" >Highlight neighbours of just-changed cells</RadioButton>
+            <RadioButton x:Name="ImmigrationRadioButton" >Immigration</RadioButton>
+            <RadioButton x:Name="QuadLifeRadioButton" >QuadLife</RadioButton>
+            <RadioButton x:Name="NoneRadioButton" IsChecked="True">Normal</RadioButton>
         </StackPanel>
         
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0">
+            <Button Margin="4" Width="80" Height="24" VerticalAlignment="Top" Click="buttonOkay_Click" >OK</Button>
+            <Button Margin="4" Width="80" Height="24" VerticalAlignment="Top" IsCancel="True" >Cancel</Button>
+        </StackPanel>
+        
+        <DockPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Margin="12">
+            <TextBlock DockPanel.Dock= "Top" TextWrapping="Wrap" Foreground="SaddleBrown" Margin="0 0 0 8" Text="Rules: e.g. 'B3/S23' means that a dead cell is born if it has 3 neighbours and that a live cell survives if it has 2 or 3 neighbours and dies otherwise."></TextBlock>    
+            <TextBlock DockPanel.Dock= "Top" TextWrapping="Wrap" Foreground="SaddleBrown" Margin="0 0 0 8" Text="Immigration is a variation that is the same as the Game of Life, except that there are two ON states (often expressed as two different colours). Whenever a new cell is born, it takes on the ON state that is the majority in the three cells that gave it birth. This feature can be used to examine interactions between spaceships and other objects within the game."></TextBlock>
+            <TextBlock DockPanel.Dock= "Top" TextWrapping="Wrap" Foreground="SaddleBrown" Margin="0 0 0 8" Text="A similar variation, called QuadLife, involves four different ON states. When a new cell is born from three different ON neighbours, it takes on the fourth value, and otherwise like Immigration it takes the majority value. Except for the variation among ON cells, both of these variations act identically to Life."></TextBlock>
+            <TextBlock DockPanel.Dock= "Top" TextWrapping="Wrap" Foreground="SaddleBrown" Text="Except for the variation among ON cells, Immigration and QuadLife act identically to Life."></TextBlock>
+        </DockPanel>
     </Grid>
+    </Border>
 </Window>

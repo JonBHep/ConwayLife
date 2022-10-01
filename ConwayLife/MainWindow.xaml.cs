@@ -43,11 +43,23 @@ namespace ConwayLife
         */
 
         /*
-           Apart from the classes of object demonstrated in this implementation, later discoveries included other "guns", which are stationary, and which shoot out gliders or other spaceships; "puffers", which move along leaving behind a trail of debris; and "rakes", which move and emit spaceships.[23] Gosper also constructed the first pattern with an asymptotically optimal quadratic growth rate, called a "breeder", or "lobster", which worked by leaving behind a trail of guns.
+           Apart from the classes of object demonstrated in this implementation, later discoveries included other "guns",
+           which are stationary, and which shoot out gliders or other spaceships; "puffers", which move along leaving 
+           behind a trail of debris; and "rakes", which move and emit spaceships.[23] Gosper also constructed the first 
+           pattern with an asymptotically optimal quadratic growth rate, called a "breeder", or "lobster", which worked 
+           by leaving behind a trail of guns.
 
-           It is possible for gliders to interact with other objects in interesting ways. For example, if two gliders are shot at a block in just the right way, the block will move closer to the source of the gliders. If three gliders are shot in just the right way, the block will move farther away. This "sliding block memory" can be used to simulate a counter. It is possible to construct logic gates such as AND, OR and NOT using gliders. It is possible to build a pattern that acts like a finite state machine connected to two counters. This has the same computational power as a universal Turing machine, so the Game of Life is theoretically as powerful as any computer with unlimited memory and no time constraints: it is Turing complete.
+           It is possible for gliders to interact with other objects in interesting ways. For example, if two gliders 
+           are shot at a block in just the right way, the block will move closer to the source of the gliders. If three
+           gliders are shot in just the right way, the block will move farther away. This "sliding block memory" can be 
+           used to simulate a counter. It is possible to construct logic gates such as AND, OR and NOT using gliders. 
+           It is possible to build a pattern that acts like a finite state machine connected to two counters. This has 
+           the same computational power as a universal Turing machine, so the Game of Life is theoretically as powerful 
+           as any computer with unlimited memory and no time constraints: it is Turing complete.
 
-           Furthermore, a pattern can contain a collection of guns that fire gliders in such a way as to construct new objects, including copies of the original pattern. A "universal constructor" can be built which contains a Turing complete computer, and which can build many types of complex objects, including more copies of itself.
+           Furthermore, a pattern can contain a collection of guns that fire gliders in such a way as to construct new objects, 
+           including copies of the original pattern. A "universal constructor" can be built which contains a Turing complete 
+           computer, and which can build many types of complex objects, including more copies of itself.
 
            
          */
@@ -161,9 +173,9 @@ namespace ConwayLife
             textblockDiscovery.Text = $"Discovered by {thing.Discoverer} in {thing.DiscoveryYear}";
             textblockObjectDetails.Text = thing.Comment;
             ClearCells();
-            for (int x=0;x< thing.Width; x++)
+            for (var x=0;x< thing.Width; x++)
             {
-                for (int y = 0; y < thing.Height; y++)
+                for (var y = 0; y < thing.Height; y++)
                 {
                     if (thing.CellValue(x, y)) { _cell[oX + x, oY + y] = true; _everbeen[oX + x, oY + y] = true; }
                 }
@@ -183,7 +195,7 @@ namespace ConwayLife
                 {
                     bool q = (rng.NextDouble() > 0.8);
                     _cell[x, y] = q;
-                    _everbeen[x, y] = q;
+                    _everbeen[x, y] = _everbeen[x,y]|| q;
                 }
             }
             InitialiseRun();
@@ -316,7 +328,8 @@ namespace ConwayLife
                         }
                         else
                         {
-                            if (births.Contains(_neighbours[x, y].ToString())) { _cell[x, y] = true; _genchanges++; MarkNeighbours(x, y); }
+                            if (births.Contains(_neighbours[x, y].ToString())) { _cell[x, y] = true;
+                                _everbeen[x, y] = true; _genchanges++; MarkNeighbours(x, y); }
                         }
                     }
                 }
@@ -809,7 +822,6 @@ namespace ConwayLife
                     if (IsOnBoard(oy + y, DimensionY))
                     {
                         for (int x = 0; x < dx; x++)
-
                         {
                             if (IsOnBoard(ox + x, DimensionX))
                             {

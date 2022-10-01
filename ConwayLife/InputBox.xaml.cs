@@ -9,11 +9,11 @@ public partial class InputBox
     {
         InitializeComponent();
         this.Title = boxTitle;
-        textblockPrompt.Text = promptText;
-        textboxResponse.SelectedText = defaultResponse;
+        TextblockPrompt.Text = promptText;
+        TextboxResponse.SelectedText = defaultResponse;
     }
 
-    public string ResponseText => textboxResponse.Text;
+    public string ResponseText => TextboxResponse.Text;
 
     private void buttonOkay_Click(object sender, RoutedEventArgs e)
     {
@@ -28,6 +28,6 @@ public partial class InputBox
     private void Window_ContentRendered(object sender, EventArgs e)
     {
         Icon = this.Owner.Icon;
-        textboxResponse.Focus();
+        TextboxResponse.Focus();
     }
 }

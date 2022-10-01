@@ -9,69 +9,75 @@ public partial class OptionsWindow
     {
         InitializeComponent();
     }
+
     private void buttonOkay_Click(object sender, RoutedEventArgs e)
+    {
+        if (WrapRadioButton.IsChecked.HasValue && WrapRadioButton.IsChecked.Value)
         {
-            if (radiobuttonWrap.IsChecked.HasValue && radiobuttonWrap.IsChecked.Value)
-            {
-                Core.Instance.Wrapping = true;
-            }
-            else
-            {
-                Core.Instance.Wrapping = false;
-            }
-            if (radiobuttonEver.IsChecked.HasValue && radiobuttonEver.IsChecked.Value)
-            {
-                Core.Instance.CellDisplay= Core.CellDisplayOptions.EverLive;
-            }
-            else if (radiobuttonAffected.IsChecked.HasValue && radiobuttonAffected.IsChecked.Value)
-            {
-                Core.Instance.CellDisplay = Core.CellDisplayOptions.Affected;
-            }
-            else
-            {
-                Core.Instance.CellDisplay= Core.CellDisplayOptions.None;
-            }
-            if (radiobuttonConway.IsChecked.HasValue && radiobuttonConway.IsChecked.Value)
-            {
-                Core.Instance.RuleString = "B3/S23";
-            }
-            else
-            {
-                Core.Instance.RuleString = "B36/S23";
-            }
-            DialogResult = true;
+            Core.Instance.Wrapping = true;
+        }
+        else
+        {
+            Core.Instance.Wrapping = false;
         }
 
-        private void Window_ContentRendered(object sender, EventArgs e)
+        if (EverRadioButton.IsChecked.HasValue && EverRadioButton.IsChecked.Value)
         {
-            if (Core.Instance.Wrapping)
-            {
-                radiobuttonWrap.IsChecked = true;
-            }
-            else
-            {
-                radiobuttonNoWrap.IsChecked = true;
-            }
-            if (Core.Instance.CellDisplay== Core.CellDisplayOptions.EverLive)
-            {
-                radiobuttonEver.IsChecked = true;
-            }
-            else if (Core.Instance.CellDisplay == Core.CellDisplayOptions.Affected)
-            {
-                radiobuttonAffected.IsChecked = true;
-            }
-            else 
-            {
-                radiobuttonNone.IsChecked = true;
-            }
-            if (Core.Instance.RuleString.Equals("B3/S23"))
-            {
-                radiobuttonConway.IsChecked = true;
-            }
-            else
-            {
-                radiobuttonHighLife.IsChecked = true;
-            }
+            Core.Instance.CellDisplay = Core.CellDisplayOptions.EverLive;
         }
+        else if (AffectedRadioButton.IsChecked.HasValue && AffectedRadioButton.IsChecked.Value)
+        {
+            Core.Instance.CellDisplay = Core.CellDisplayOptions.Affected;
+        }
+        else
+        {
+            Core.Instance.CellDisplay = Core.CellDisplayOptions.None;
+        }
+
+        if (ConwayRadioButton.IsChecked.HasValue && ConwayRadioButton.IsChecked.Value)
+        {
+            Core.Instance.RuleString = "B3/S23";
+        }
+        else
+        {
+            Core.Instance.RuleString = "B36/S23";
+        }
+
+        DialogResult = true;
+    }
+
+    private void Window_ContentRendered(object sender, EventArgs e)
+    {
+        if (Core.Instance.Wrapping)
+        {
+            WrapRadioButton.IsChecked = true;
+        }
+        else
+        {
+            NoWrapRadioButton.IsChecked = true;
+        }
+
+        switch (Core.Instance.CellDisplay)
+        {
+            case Core.CellDisplayOptions.EverLive:
+                EverRadioButton.IsChecked = true;
+                break;
+            case Core.CellDisplayOptions.Affected:
+                AffectedRadioButton.IsChecked = true;
+                break;
+            default:
+                NoneRadioButton.IsChecked = true;
+                break;
+        }
+
+        if (Core.Instance.RuleString.Equals("B3/S23"))
+        {
+            ConwayRadioButton.IsChecked = true;
+        }
+        else
+        {
+            HighLifeRadioButton.IsChecked = true;
+        }
+    }
 
 }
