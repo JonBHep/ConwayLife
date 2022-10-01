@@ -1,0 +1,44 @@
+﻿<Window x:Class="ConwayLife.OptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:ConwayLife"
+        mc:Ignorable="d"
+        Title="Game of Life - Options" Height="600" Width="400" WindowStartupLocation="CenterOwner" Topmost="True" ResizeMode="NoResize" ContentRendered="Window_ContentRendered">
+    <Grid>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="1" VerticalAlignment="Stretch">
+            <TextBlock VerticalAlignment="Top" FontWeight="Medium">Wrapping</TextBlock>
+            <RadioButton x:Name="radiobuttonWrap" IsChecked="True" >Wrap screen</RadioButton>
+            <RadioButton x:Name="radiobuttonNoWrap" >Do not wrap screen</RadioButton>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" VerticalAlignment="Stretch">
+            <TextBlock VerticalAlignment="Top" FontWeight="Medium">Cell display options</TextBlock>
+            <RadioButton x:Name="radiobuttonEver" >Highlight cells that have ever been live</RadioButton>
+            <RadioButton x:Name="radiobuttonAffected" >Highlight neighbours of just-changed cells</RadioButton>
+            <RadioButton x:Name="radiobuttonNone" IsChecked="True">No highlight</RadioButton>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" VerticalAlignment="Stretch">
+            <TextBlock VerticalAlignment="Top" FontWeight="Medium">Rules</TextBlock>
+            <RadioButton x:Name="radiobuttonConway" IsChecked="True">Conway's Game of Life (B3/S23)</RadioButton>
+            <RadioButton x:Name="radiobuttonHighLife">HighLife (B36/S23)</RadioButton>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="4">
+            <Button x:Name="buttonOkay" Margin="4" Width="80" Height="24" VerticalAlignment="Top" Click="buttonOkay_Click" >OK</Button>
+            <Button x:Name="buttonCancel" Margin="4" Width="80" Height="24" VerticalAlignment="Top" IsCancel="True" >Cancel</Button>
+        </StackPanel>
+        
+    </Grid>
+</Window>

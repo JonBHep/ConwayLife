@@ -1,0 +1,32 @@
+﻿<Window x:Class="ConwayLife.ObjectSelectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:ConwayLife"
+        mc:Ignorable="d"
+        Title="Object Selection" Height="700" Width="1100" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ContentRendered="Window_ContentRendered">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="34"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TreeView x:Name="treeviewObjects" Background="Linen" SelectedItemChanged="treeviewObjects_SelectedItemChanged" FontFamily="Consolas">
+                
+            </TreeView>
+            <Canvas x:Name="canvasShow" Background="Ivory" Grid.Column="1">
+                
+            </Canvas>
+        </Grid>
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <Button x:Name="buttonSelect" Margin="4" Padding="8 3" MinWidth="60" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="buttonSelect_Click">Select</Button>
+            <Button x:Name="buttonDelete" Margin="4" Padding="8 3" MinWidth="60" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="buttonDelete_Click">Delete</Button>
+            <Button x:Name="buttonCancel" Margin="4" Padding="8 3" MinWidth="60" VerticalAlignment="Center" VerticalContentAlignment="Center" IsCancel="True">Cancel</Button>
+        </StackPanel>
+    </Grid>
+</Window>

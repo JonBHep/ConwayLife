@@ -20,6 +20,7 @@ public class Shape : IComparable<Shape>
         cell = new bool[xdim, ydim];
         objectcomment = string.Empty;
         objectdiscoverer = string.Empty;
+        objectdiscoveryyear = string.Empty;
         objectkind = string.Empty;
         objectname = string.Empty;
     }
@@ -124,8 +125,12 @@ public class Shape : IComparable<Shape>
         cell[x, y] = live;
     }
 
-    public int CompareTo(Shape other)
+    public int CompareTo(Shape? other)
     {
+        if (other is null)
+        {
+            return 0;
+        }
         return string.Compare(sortString, other.sortString, StringComparison.Ordinal);
     }
 

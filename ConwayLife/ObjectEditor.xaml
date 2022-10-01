@@ -1,0 +1,57 @@
+﻿<Window x:Class="ConwayLife.ObjectEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:ConwayLife"
+        mc:Ignorable="d"
+        Title="Life - Object editor" Height="1000" Width="1100" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Loaded="Window_Loaded" ContentRendered="Window_ContentRendered">
+    <Grid d:IsLocked="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="34"/>
+            <RowDefinition Height="34"/>
+            <RowDefinition Height="34"/>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="207*"/>
+            <RowDefinition Height="34"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" VerticalAlignment="Center" d:IsLocked="True">
+            <MenuItem Header="File" d:IsLocked="True">
+                <MenuItem Header="Save as..." d:IsLocked="True">
+                    <MenuItem x:Name="mnuFileSaveRle" Header="Run Length Encoding (RLE) file" Click="mnuFileSaveRle_Click" d:IsLocked="True"></MenuItem>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Grid" d:IsLocked="True">
+                <MenuItem x:Name="mnuGridExpand" Header="Expand grid" Click="mnuGridExpand_Click" d:IsLocked="True"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Shift" d:IsLocked="True">
+                <MenuItem x:Name="mnuShiftRight" Header="Shift right" Click="mnuShiftRight_Click" d:IsLocked="True"></MenuItem>
+                <MenuItem x:Name="mnuShiftDown" Header="Shift down" Click="mnuShiftDown_Click" d:IsLocked="True"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <DockPanel Grid.Row="1" d:IsLocked="True">
+            <TextBlock Margin="6 3" VerticalAlignment="Center" FontWeight="Bold" d:IsLocked="True">Name:</TextBlock>
+            <TextBox x:Name="textboxDescription" Margin="6 3" Height="27" FontWeight="DemiBold" VerticalAlignment="Center" VerticalContentAlignment="Center" d:IsLocked="True"/>
+        </DockPanel>
+        <DockPanel Grid.Row="2" d:IsLocked="True">
+            <TextBlock Margin="6 3" VerticalAlignment="Center" FontWeight="Bold" d:IsLocked="True">Kind of object:</TextBlock>
+            <ComboBox x:Name="comboboxGroups" Margin="6 3" Width="200" VerticalAlignment="Center" VerticalContentAlignment="Center" FontWeight="DemiBold" IsEditable="True" d:IsLocked="True"></ComboBox>
+            <TextBlock Margin="6 3" VerticalAlignment="Center" FontWeight="Bold" d:IsLocked="True">Discovery:</TextBlock>
+            <TextBlock Margin="6 3" VerticalAlignment="Center" FontWeight="Medium" d:IsLocked="True">Year:</TextBlock>
+            <TextBox x:Name="textboxYear" Margin="6 3" Height="27" Width="60" FontWeight="DemiBold" VerticalAlignment="Center" VerticalContentAlignment="Center" d:IsLocked="True"/>
+            <TextBlock Margin="6 3" VerticalAlignment="Center" FontWeight="Medium" d:IsLocked="True">Discoverer:</TextBlock>
+            <TextBox x:Name="textboxDiscoverer" Margin="6 3" Height="27" FontWeight="DemiBold" VerticalAlignment="Center" VerticalContentAlignment="Center" d:IsLocked="True"/>
+        </DockPanel>
+        <DockPanel Grid.Row="3" d:IsLocked="True">
+            <TextBlock Margin="6" VerticalAlignment="Top" FontWeight="Bold" d:IsLocked="True">Comment:</TextBlock>
+            <TextBox x:Name="textboxComment" TextWrapping="Wrap" Margin="6" VerticalAlignment="Stretch" FontWeight="DemiBold" d:IsLocked="True"/>
+        </DockPanel>
+        <Canvas x:Name="canvasDesign" Grid.Row="4" Background="AntiqueWhite" d:IsLocked="True"></Canvas>
+        <StackPanel Orientation="Horizontal" Grid.Row="5" d:IsLocked="True">
+            <Button x:Name="buttonSaveObject" Margin="6 3" Width="60" Height="24" VerticalAlignment="Center" IsEnabled="False" Click="buttonSaveObject_Click" d:IsLocked="True">Save</Button>
+            <Button x:Name="buttonCancel" Margin="6 3" Width="60" Height="24" VerticalAlignment="Center" IsCancel="True" d:IsLocked="True">Cancel</Button>
+            <TextBlock x:Name="textblockGrid" Margin="8 0" VerticalAlignment="Center" MinWidth="100" d:IsLocked="True">GRID: 0 x 0</TextBlock>
+            <TextBlock x:Name="textblockCells" Margin="8 0" VerticalAlignment="Center" MinWidth="100" d:IsLocked="True">CELLS: 0</TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>

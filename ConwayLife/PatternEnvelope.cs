@@ -18,6 +18,7 @@ public class PatternEnvelope
             _patternDimensionX = corePattern.XDimension;
             _patternDimensionY = corePattern.YDimension;
             _patternCells = new bool[_patternDimensionX, _patternDimensionY];
+            _frameCells = new int[_frameDimensionX, _frameDimensionY];
             int n = -1;
             for(int y = 0; y < _patternDimensionY; y++)
             {
@@ -41,7 +42,7 @@ public class PatternEnvelope
         {
             _frameDimensionX = _patternDimensionX + 2;
             _frameDimensionY = _patternDimensionY + 2;
-            _frameCells = new int[_frameDimensionX, _frameDimensionY];
+            
             // set all cells of frame to null
             for (int fy = 0; fy < _frameDimensionY; fy++)
             {
