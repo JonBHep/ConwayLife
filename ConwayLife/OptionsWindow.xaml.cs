@@ -21,13 +21,21 @@ public partial class OptionsWindow
             Core.Instance.Wrapping = false;
         }
 
-        if (EverRadioButton.IsChecked.HasValue && EverRadioButton.IsChecked.Value)
+        if (EverRadioButton.IsChecked ?? false)
         {
             Core.Instance.CellDisplay = Core.CellDisplayOptions.EverLive;
         }
-        else if (AffectedRadioButton.IsChecked.HasValue && AffectedRadioButton.IsChecked.Value)
+        else if (AffectedRadioButton.IsChecked ?? false)
         {
             Core.Instance.CellDisplay = Core.CellDisplayOptions.Affected;
+        }
+        else if (ImmigrationRadioButton.IsChecked ?? false)
+        {
+            Core.Instance.CellDisplay = Core.CellDisplayOptions.Immigration;
+        }
+        else if (QuadLifeRadioButton.IsChecked ?? false)
+        {
+            Core.Instance.CellDisplay = Core.CellDisplayOptions.QuadLife;
         }
         else
         {
