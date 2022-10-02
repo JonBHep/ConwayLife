@@ -72,7 +72,7 @@ namespace ConwayLife
 
         private readonly SolidColorBrush _brushBackground = Brushes.Ivory;
         private readonly SolidColorBrush _brushAffected = Brushes.Moccasin;
-        private readonly SolidColorBrush _brushEverlive = Brushes.Yellow;
+        //private readonly SolidColorBrush _brushEverlive = Brushes.Yellow;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -239,7 +239,7 @@ namespace ConwayLife
                     {
                         case Core.CellDisplayOptions.Life:
                         {
-                            if (_cellule[x, y].Alive)
+                            if (_cellule[x, y].IsAlive)
                             {
                                 _square[x, y].Fill = Brushes.DarkGreen;
                                 _population++;
@@ -250,14 +250,15 @@ namespace ConwayLife
                             }
                             break;
                         }
+                        
                         case Core.CellDisplayOptions.Affected:
                         {
-                            if (_cellule[x, y].Alive)
+                            if (_cellule[x, y].IsAlive)
                             {
                                 _square[x, y].Fill = Brushes.DarkGreen;
                                 _population++;
                             }
-                            else if ( _cellule[x, y].Touched)        
+                            else if ( _cellule[x, y].JustTouched)        
                             {
                                 _square[x, y].Fill = _brushAffected;        
                             }
@@ -267,16 +268,17 @@ namespace ConwayLife
                             }
                             break;
                         }
+                        
                         case Core.CellDisplayOptions.EverLive:
                         {
-                            if (_cellule[x, y].Alive)
+                            if (_cellule[x, y].IsAlive)
                             {
                                 _square[x, y].Fill = Brushes.DarkGreen;
                                 _population++;
                             }
-                            else if ( _cellule[x, y].Touched)        
+                            else if ( _cellule[x, y].EverAlive)        
                             {
-                                _square[x, y].Fill = _brushEverlive;        
+                                _square[x, y].Fill = _brushAffected;        
                             }
                             else
                             {
@@ -284,9 +286,10 @@ namespace ConwayLife
                             }
                             break;
                         }
+                        
                         case Core.CellDisplayOptions.Immigration:
                         {
-                            if (_cellule[x, y].Alive)
+                            if (_cellule[x, y].IsAlive)
                             {
                                 _square[x, y].Fill =ImmigrationBrush(_cellule[x,y].ColourValue);
                                 _population++;
@@ -297,9 +300,10 @@ namespace ConwayLife
                             }
                             break;
                         }
+                        
                         case Core.CellDisplayOptions.QuadLife:
                         {
-                            if (_cellule[x, y].Alive)
+                            if (_cellule[x, y].IsAlive)
                             {
                                 _square[x, y].Fill =ImmigrationBrush(_cellule[x,y].ColourValue);
                                 _population++;
@@ -311,6 +315,7 @@ namespace ConwayLife
                             
                             break;
                         }
+                        
                     }
                 }
             }
@@ -369,17 +374,15 @@ namespace ConwayLife
             if (rules[0] != 'B') { throw new ArgumentException("Improper rule string"); }
             if (rules[p + 1] != 'S') { throw new ArgumentException("Improper rule string"); }
             
-            var survivors = rules.Substring(p + 2);
-            var births = rules.Substring(1, p - 1);
+            var toSurvive = rules[(p + 2)..];
+            var toBeBorn = rules.Substring(1, p - 1);
 
             for (var x = 0; x < DimensionX; x++)
             {
                 for (var y = 0; y < DimensionY; y++)
                 {
-                    if (_cellule[x, y].Touched)
-                    {
-                        CountNeighbours(x, y); // The CountNeighbours method takes account of whether wrapping occurs or not
-                    }
+                    CountNeighbours(x, y, toSurvive, toBeBorn); 
+                    // The CountNeighbours method takes account of whether wrapping occurs or not
                 }
             }
 
@@ -389,42 +392,26 @@ namespace ConwayLife
             {
                 for (var y = 0; y < DimensionY; y++)
                 {
-                    if (_cellule[x, y].Touched)
+                    if (_cellule[x, y].Evolve())
                     {
-                        if (_cellule[x, y].Alive)
-                        {
-                            if (!survivors.Contains(_cellule[x, y].Neighbours.ToString())) { _cellule[x, y].Kill();
-                                _genchanges++; MarkNeighbours(x, y); }
-                        }
-                        else
-                        {
-                            if (births.Contains(_cellule[x, y].Neighbours.ToString())) { _cellule[x, y].Awaken(Core.Instance.CellDisplay);
-                                _genchanges++; MarkNeighbours(x, y); }
-                        }
+                        _genchanges++;
+                        MarkNeighbours(x, y);
                     }
                 }
             }
-            for (var x = 0; x < DimensionX; x++)
-            {
-                for (var y = 0; y < DimensionY; y++)
-                {
-                    _cellule[x, y].Touched =_cellule[x, y].AffectedNow;
-                    _cellule[x, y].AffectedNow = false;
-                }
-            }
+           
             _generation++;
         }
+        
         private void EvolveImmigration()
         {
-            int bestColour = 0;
             for (var x = 0; x < DimensionX; x++)
             {
                 for (var y = 0; y < DimensionY; y++)
                 {
-                    if (_cellule[x, y].Touched)
-                    {
-                        CountNeighboursImmigration(x, y, out bestColour); // The CountNeighbours method takes account of whether wrapping occurs or not
-                    }
+
+                    CountNeighboursImmigration(x, y); 
+                    // The CountNeighbours method takes account of whether wrapping occurs or not
                 }
             }
 
@@ -434,37 +421,14 @@ namespace ConwayLife
             {
                 for (var y = 0; y < DimensionY; y++)
                 {
-                    if (_cellule[x, y].Touched)
+                    if (_cellule[x, y].Evolve())
                     {
-                        if (_cellule[x, y].Alive)
-                        {
-                            if (_cellule[x, y].Neighbours is not (2 or 3)) 
-                            {
-                                _cellule[x, y].Kill();
-                                _genchanges++; 
-                                MarkNeighbours(x, y); 
-                            }
-                        }
-                        else
-                        {
-                            if (_cellule[x, y].Neighbours==3) 
-                            {
-                                _cellule[x, y].Awaken(bestColour);
-                                _genchanges++;
-                                MarkNeighbours(x, y); 
-                            }
-                        }
+                        _genchanges++;
+                        MarkNeighbours(x, y);
                     }
                 }
             }
-            for (var x = 0; x < DimensionX; x++)
-            {
-                for (var y = 0; y < DimensionY; y++)
-                {
-                    _cellule[x, y].Touched =_cellule[x, y].AffectedNow;
-                    _cellule[x, y].AffectedNow = false;
-                }
-            }
+            
             _generation++;
         }
         
@@ -475,10 +439,8 @@ namespace ConwayLife
             {
                 for (var y = 0; y < DimensionY; y++)
                 {
-                    if (_cellule[x, y].Touched)
-                    {
-                        CountNeighboursQuadLife(x, y, out choiceColour); // The CountNeighbours method takes account of whether wrapping occurs or not
-                    }
+                    CountNeighboursQuadLife(x, y, out choiceColour); 
+                    // The CountNeighbours method takes account of whether wrapping occurs or not
                 }
             }
 
@@ -488,41 +450,18 @@ namespace ConwayLife
             {
                 for (var y = 0; y < DimensionY; y++)
                 {
-                    if (_cellule[x, y].Touched)
+                    if (_cellule[x, y].Evolve())
                     {
-                        if (_cellule[x, y].Alive)
-                        {
-                            if (_cellule[x, y].Neighbours is not (2 or 3)) 
-                            {
-                                _cellule[x, y].Kill();
-                                _genchanges++; 
-                                MarkNeighbours(x, y); 
-                            }
-                        }
-                        else
-                        {
-                            if (_cellule[x, y].Neighbours==3) 
-                            {
-                                _cellule[x, y].Awaken(choiceColour);
-                                _genchanges++;
-                                MarkNeighbours(x, y); 
-                            }
-                        }
+                        _genchanges++;
+                        MarkNeighbours(x, y);
                     }
                 }
             }
-            for (var x = 0; x < DimensionX; x++)
-            {
-                for (var y = 0; y < DimensionY; y++)
-                {
-                    _cellule[x, y].Touched =_cellule[x, y].AffectedNow;
-                    _cellule[x, y].AffectedNow = false;
-                }
-            }
+           
             _generation++;
         }
         
-        private void CountNeighboursImmigration(int px, int py, out int majorityTint)
+        private void CountNeighboursImmigration(int px, int py)
         {
             var voisins = 0;
             var colourCount = new int[3];
@@ -540,7 +479,7 @@ namespace ConwayLife
                             {
                                 if (!((dx == px) && (dy == py)))
                                 {
-                                    if (_cellule[xx, yy].Alive)
+                                    if (_cellule[xx, yy].IsAlive)
                                     {
                                         voisins++;
                                         colourCount[_cellule[xx, yy].ColourValue]++;
@@ -561,16 +500,18 @@ namespace ConwayLife
                         {
                             if (IsOnBoard(dy, DimensionY))
                             {
-                                if (!((dx == px) && (dy == py)))
-                                {
-                                    if (_cellule[dx, dy].Alive) { voisins++;colourCount[_cellule[dx, dy].ColourValue]++;}
-                                }
+                                if (dx == px && dy == py) continue;
+                                if (!_cellule[dx, dy].IsAlive) continue;
+                                voisins++;
+                                colourCount[_cellule[dx, dy].ColourValue]++;
                             }
                         }
                     }
                 }
             }
-            _cellule[px, py].Neighbours = voisins;
+
+            _cellule[px, py].DefaultToNoChange();
+            int majorityTint;
             if (colourCount[1] > colourCount[2])
             {
                 majorityTint = 1;
@@ -579,13 +520,28 @@ namespace ConwayLife
             {
                 majorityTint = 2;
             }
+            
+            if (_cellule[px, py].IsAlive)
+            {
+                if (voisins is not(2 or 3))
+                {
+                    _cellule[px, py].Kill();
+                }
+            }
+            else
+            {
+                if (voisins==3)
+                {
+                    _cellule[px, py].Awaken(majorityTint); // bring to life with appropriate colour
+                }
+            }
         }
-        
+
         private void CountNeighboursQuadLife(int px, int py, out int chosenTint)
         {
             var voisins = 0;
             var colourCount = new int[5];
-            
+            chosenTint = 0;
             // Examine the cells adjacent to (but not including) [x, y] (wrapping if necessary)
             if (Core.Instance.Wrapping)
             {
@@ -599,7 +555,7 @@ namespace ConwayLife
                             {
                                 if (!((dx == px) && (dy == py)))
                                 {
-                                    if (_cellule[xx, yy].Alive)
+                                    if (_cellule[xx, yy].IsAlive)
                                     {
                                         voisins++;
                                         colourCount[_cellule[xx, yy].ColourValue]++;
@@ -619,16 +575,16 @@ namespace ConwayLife
                     {
                         if (IsOnBoard(dy, DimensionY))
                         {
-                            if ((dx == px) && (dy == py)) continue;
-                            if (!_cellule[dx, dy].Alive) continue;
-                            voisins++; 
+                            if (dx == px && dy == py) continue;
+                            if (!_cellule[dx, dy].IsAlive) continue;
+                            voisins++;
                             colourCount[_cellule[dx, dy].ColourValue]++;
                         }
                     }
                 }
             }
-            _cellule[px, py].Neighbours = voisins;
-            
+
+            _cellule[px, py].DefaultToNoChange();
             var singles = 0;
             var other = 0;
             var majority = 1;
@@ -650,25 +606,33 @@ namespace ConwayLife
             }
 
             // three colours the same - take the fourth (otherwise take the majority colour)
-            if (voisins == 3)
+            
+            if (_cellule[px, py].IsAlive)
             {
-                if (singles == 3)
+                if (voisins is not (2 or 3))
                 {
-                    chosenTint = other;
-                }
-                else
-                {
-                    chosenTint = majority;
+                    _cellule[px, py].Kill();
                 }
             }
             else
             {
-                chosenTint = 0;
+                if (voisins == 3)
+                {
+                    if (singles == 3)
+                    {
+                        chosenTint = other;
+                    }
+                    else
+                    {
+                        chosenTint = majority;
+                    }
+
+                    _cellule[px, py].Awaken(chosenTint); // bring to life with appropriate colour
+                }
             }
-            // TODO Immigration works but QuadLife doesn't
         }
-        
-        private void CountNeighbours(int px, int py)
+    
+        private void CountNeighbours(int px, int py, string survivors, string midwives)
         {
             var voisins = 0;
             // Examine the cells adjacent to (but not including) [x, y] (wrapping if necessary)
@@ -684,7 +648,10 @@ namespace ConwayLife
                             {
                                 if (!((dx == px) && (dy == py)))
                                 {
-                                    if (_cellule[xx, yy].Alive) { voisins++; }
+                                    if (_cellule[xx, yy].IsAlive)
+                                    {
+                                        voisins++;
+                                    }
                                 }
                             }
                         }
@@ -703,14 +670,32 @@ namespace ConwayLife
                             {
                                 if (!((dx == px) && (dy == py)))
                                 {
-                                    if (_cellule[dx, dy].Alive) { voisins++; }
+                                    if (_cellule[dx, dy].IsAlive)
+                                    {
+                                        voisins++;
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            _cellule[px, py].Neighbours = voisins;
+
+            _cellule[px, py].DefaultToNoChange();
+            if (_cellule[px, py].IsAlive)
+            {
+                if (!survivors.Contains(voisins.ToString()))
+                {
+                    _cellule[px, py].Kill();
+                }
+            }
+            else
+            {
+                if (midwives.Contains(voisins.ToString()))
+                {
+                    _cellule[px, py].Awaken(1); // bring to life
+                }
+            }
         }
 
         private void MarkNeighbours(int px, int py)
@@ -802,7 +787,7 @@ namespace ConwayLife
             {
                 for (var y = 0; y < DimensionY; y++)
                 {
-                    _cellule[x, y].Touched = true;
+                    _cellule[x, y].JustTouched = true;
                     _cellule[x, y].AffectedNow = false;
                 }
             }
@@ -1123,7 +1108,7 @@ namespace ConwayLife
                         {
                             var xx = PositionOnBoard(ox + x, DimensionX);
                             {
-                                if (_cellule[xx, yy].Alive) { code += 'O'; } else { code += '.'; }
+                                if (_cellule[xx, yy].IsAlive) { code += 'O'; } else { code += '.'; }
                             }
                         }
                     }
@@ -1143,7 +1128,7 @@ namespace ConwayLife
                         {
                             if (IsOnBoard(ox + x, DimensionX))
                             {
-                                if (_cellule[ox + x, oy + y].Alive) { code += 'O'; } else { code += '.'; }
+                                if (_cellule[ox + x, oy + y].IsAlive) { code += 'O'; } else { code += '.'; }
                             }
                             else
                             {
