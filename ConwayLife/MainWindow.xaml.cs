@@ -434,12 +434,11 @@ namespace ConwayLife
         
         private void EvolveQuadLife()
         {
-            int choiceColour = 0;
             for (var x = 0; x < DimensionX; x++)
             {
                 for (var y = 0; y < DimensionY; y++)
                 {
-                    CountNeighboursQuadLife(x, y, out choiceColour); 
+                    CountNeighboursQuadLife(x, y); 
                     // The CountNeighbours method takes account of whether wrapping occurs or not
                 }
             }
@@ -537,11 +536,11 @@ namespace ConwayLife
             }
         }
 
-        private void CountNeighboursQuadLife(int px, int py, out int chosenTint)
+        private void CountNeighboursQuadLife(int px, int py)
         {
             var voisins = 0;
             var colourCount = new int[5];
-            chosenTint = 0;
+            int chosenTint;
             // Examine the cells adjacent to (but not including) [x, y] (wrapping if necessary)
             if (Core.Instance.Wrapping)
             {
