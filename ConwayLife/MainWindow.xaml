@@ -8,7 +8,7 @@
         Title="Conway's Game of Life" Height="750" Width="825" Loaded="Window_Loaded" ResizeMode="NoResize" ContentRendered="Window_ContentRendered" Closed="Window_Closed">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="440"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
@@ -18,37 +18,33 @@
         </Grid.RowDefinitions>
         <Menu Grid.ColumnSpan="2">
             <MenuItem x:Name="mnuGame" Header="Game" VerticalAlignment="Center" VerticalContentAlignment="Center" IsEnabled="False">
-                <MenuItem x:Name="mnuGameOptions" Header="Options" Click="mnuGameOptions_Click"></MenuItem>
-                <MenuItem x:Name="mnuGameClose" Header="Close" Click="mnuGameClose_Click"></MenuItem>
+                <MenuItem Header="Options" Click="mnuGameOptions_Click"></MenuItem>
+                <MenuItem Header="Close" Click="mnuGameClose_Click"></MenuItem>
             </MenuItem>
             <MenuItem x:Name="mnuObjects" Header="Objects" IsEnabled="False">
-                <MenuItem x:Name="mnuObjectSelect" Header="Select object..." FontWeight="Medium" Click="mnuObjectSelect_Click"></MenuItem>
-                <MenuItem x:Name="mnuObjectEdit" Header="Edit object..." Click="mnuObjectEdit_Click"></MenuItem>
-                <MenuItem x:Name="mnuObjectCreate" Header="Create object..." Click="mnuObjectCreate_Click"></MenuItem>
-                <MenuItem x:Name="mnuObjectRleImport" Header="Import object from RLE file" Click="mnuObjectRleImport_Click"></MenuItem>
+                <MenuItem Header="Select object..." FontWeight="Medium" Click="mnuObjectSelect_Click"></MenuItem>
+                <MenuItem Header="Count still lifes in current grid" Click="mnuAnalyseStillLifes_Click"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Edit object..." Click="mnuObjectEdit_Click"></MenuItem>
+                <MenuItem Header="Create object..." Click="mnuObjectCreate_Click"></MenuItem>
+                <MenuItem Header="Import object from RLE file" Click="mnuObjectRleImport_Click"></MenuItem>
             </MenuItem>
             <MenuItem x:Name="mnuRandom" Header="Random" IsEnabled="False">
-                <MenuItem x:Name="mnuRandomRandom" Header="Random pattern" Click="mnuObjectRandom_Click"></MenuItem>
-                <MenuItem x:Name="mnuRandomRandomSeed" Header="Random pattern from given seed" Click="mnuObjectRandomSeed_Click"></MenuItem>
-                <MenuItem x:Name="mnuAnalyseStillLifes" Header="Analyse still lifes" Click="mnuAnalyseStillLifes_Click"></MenuItem>
+                <MenuItem Header="Random pattern" Click="mnuObjectRandom_Click"></MenuItem>
+                <MenuItem Header="Random pattern from given seed" Click="mnuObjectRandomSeed_Click"></MenuItem>
+                
             </MenuItem>
             <MenuItem x:Name="mnuWeb" Header="Web" IsEnabled="False">
-                <MenuItem x:Name="mnuWebLexicon" Header="Game of Life Lexicon" Click="mnuWebLexicon_Click"></MenuItem>
-                <MenuItem x:Name="mnuWebWiki" Header="Game of Life Wiki" Click="mnuWebWiki_Click"></MenuItem>
+                <MenuItem Header="Game of Life Lexicon" Click="mnuWebLexicon_Click"></MenuItem>
+                <MenuItem Header="Game of Life Wiki" Click="mnuWebWiki_Click"></MenuItem>
             </MenuItem>
         </Menu>
-        <!--<StackPanel Margin="8" Grid.Row="1">
-            <TextBlock FontWeight="Bold" >Conway's Game of Life</TextBlock>
-            <TextBlock FontSize="10" TextWrapping="Wrap">1. Any live cell with fewer than two live neighbours dies, as if caused by under-population.</TextBlock>
-            <TextBlock FontSize="10" TextWrapping="Wrap">2. Any live cell with two or three live neighbours lives on to the next generation.</TextBlock>
-            <TextBlock FontSize="10" TextWrapping="Wrap">3. Any live cell with more than three live neighbours dies, as if by over-population.</TextBlock>
-            <TextBlock FontSize="10" TextWrapping="Wrap">4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</TextBlock>
-        </StackPanel>-->
+        
         <DockPanel Grid.Row="1">
             <TextBlock x:Name="textblockRules" DockPanel.Dock="Top" Margin="4" FontFamily="Comic Sans Ms" FontSize="16" FontWeight="Bold" Foreground="DarkGreen">Rules</TextBlock>
             <TextBlock x:Name="textblockWrapping" DockPanel.Dock="Top" Margin="4" FontFamily="Comic Sans Ms" FontWeight="Bold" Foreground="DarkGreen">Not wrapping</TextBlock>
             <TextBlock x:Name="textblockShowEver" DockPanel.Dock="Top" Margin="4" FontFamily="Comic Sans Ms" FontWeight="Bold" Foreground="DarkGreen">Not showing ever</TextBlock>
-            <TextBlock x:Name="textblockClock" DockPanel.Dock="Top" Margin="6" FontFamily="Courier New" FontSize="14" Foreground="DarkGreen">00:00</TextBlock>
+            
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                 <Button x:Name="buttonRun" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="8" Padding="8 3" MinWidth="66" ToolTip="Run 200 generations" Click="buttonRun_Click" IsEnabled="False">Run</Button>
                 <Button x:Name="buttonRunStop" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="8" Padding="8 3" MinWidth="66" Click="buttonRunStop_Click" IsEnabled="False">Stop</Button>
@@ -61,12 +57,14 @@
             <TextBlock x:Name="textblockGeneration" DockPanel.Dock="Top" Margin="2" FontFamily="Comic Sans MS" FontSize="14">Generation</TextBlock>
             <TextBlock x:Name="textblockPopulation" DockPanel.Dock="Top" Margin="2" FontFamily="Comic Sans MS" FontSize="14">Population</TextBlock>
             <TextBlock x:Name="textblockGenChanges" DockPanel.Dock="Top" Margin="2" FontFamily="Comic Sans MS" FontSize="14">Changed cells</TextBlock>
-            <TextBlock x:Name="textblockObjectDetails" Margin="6" TextWrapping="WrapWithOverflow"></TextBlock>
+            <Canvas x:Name="ProgressCanvas" DockPanel.Dock="Bottom" Height="400" Width="400" Background="DarkSeaGreen" Margin="6 0 6 4"></Canvas>
+            <TextBlock x:Name="textblockObjectDetails" DockPanel.Dock="Top" Background="Aqua" Margin="6" TextWrapping="WrapWithOverflow"></TextBlock>
+            
         </DockPanel>
         <ScrollViewer Grid.Row="1" Grid.Column="1">
             <Canvas x:Name="canvasPond" Margin="0 0 0 3" Background="LightYellow"></Canvas>
         </ScrollViewer>
-        <TextBlock Grid.Column="2" FontFamily="Comic Sans MS" FontSize="14" VerticalAlignment="Center" Padding="6 0 0 0">Commonest still lifes</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="2" FontFamily="Comic Sans MS" FontSize="14" VerticalAlignment="Center" Padding="6 0 0 0">Commonest still lifes</TextBlock>
         <ListBox x:Name="listboxStillLives" Grid.Column="2" Grid.Row="1">
         </ListBox>
     </Grid>

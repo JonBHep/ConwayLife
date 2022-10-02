@@ -73,6 +73,13 @@ public partial class OptionsWindow
             case Core.CellDisplayOptions.Affected:
                 AffectedRadioButton.IsChecked = true;
                 break;
+            case Core.CellDisplayOptions.Immigration:
+
+                ImmigrationRadioButton.IsChecked = true;
+                break;
+            case Core.CellDisplayOptions.QuadLife:
+                QuadLifeRadioButton.IsChecked = true;
+                break;
             default:
                 NoneRadioButton.IsChecked = true;
                 break;

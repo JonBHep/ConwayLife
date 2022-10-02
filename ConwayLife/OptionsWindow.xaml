@@ -36,11 +36,11 @@
         
         <StackPanel Grid.Row="3" Grid.Column="0" VerticalAlignment="Stretch">
             <TextBlock FontSize="14" VerticalAlignment="Top"  Foreground="SaddleBrown">Cell display options</TextBlock>
+            <RadioButton x:Name="NoneRadioButton" IsChecked="True">Conway (default)</RadioButton>
+            <RadioButton x:Name="ImmigrationRadioButton" >Immigration cell colouring</RadioButton>
+            <RadioButton x:Name="QuadLifeRadioButton" >QuadLife cell colouring</RadioButton>
             <RadioButton x:Name="EverRadioButton" >Highlight cells that have ever been live</RadioButton>
             <RadioButton x:Name="AffectedRadioButton" >Highlight neighbours of just-changed cells</RadioButton>
-            <RadioButton x:Name="ImmigrationRadioButton" >Immigration</RadioButton>
-            <RadioButton x:Name="QuadLifeRadioButton" >QuadLife</RadioButton>
-            <RadioButton x:Name="NoneRadioButton" IsChecked="True">Normal</RadioButton>
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0">
