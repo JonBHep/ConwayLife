@@ -91,8 +91,8 @@ public partial class MainWindow
     {
         textblockDiscovery.Text = string.Empty;
         textblockPattern.Text = string.Empty;
-        canvasPond.Width = Blocksize * DimensionX;
-        canvasPond.Height = Blocksize * DimensionY;
+        PondCanvas.Width = Blocksize * DimensionX;
+        PondCanvas.Height = Blocksize * DimensionY;
         BuildStillLifeList();
         DisplayOptions();
         InitialiseSquares();
@@ -360,7 +360,7 @@ public partial class MainWindow
                 };
                 Canvas.SetLeft(r, x * Blocksize);
                 Canvas.SetTop(r, y * Blocksize);
-                canvasPond.Children.Add(r);
+                PondCanvas.Children.Add(r);
                 _square[x, y] = r;
             }
         }
@@ -1032,9 +1032,8 @@ public partial class MainWindow
         return cvs;
     }
 
-    private void mnuAnalyseStillLifes_Click(object sender, RoutedEventArgs e)
+    private void AnalyseStillLifesMenu_Click(object sender, RoutedEventArgs e)
     {
-        // TODO Work out why this does not pick up Beehive still lifes
         buttonClose.IsEnabled = false;
         buttonRun.IsEnabled = false;
         buttonStep.IsEnabled = false;
@@ -1074,7 +1073,7 @@ public partial class MainWindow
                 }
             }
         }
-        var msg = "Common Still Lifes:\n";
+        var msg = "Common Still Lifes:\n(not touching screen edge)\n";
         foreach (var slf in Core.Instance.StillLifes)
         {
             var q = slf.SerialNumber;
@@ -1149,12 +1148,12 @@ public partial class MainWindow
         if (pop<1){return;}
         double tall = DimensionX * DimensionY;
         double tallRatio = ProgressCanvas.ActualHeight / tall;
-        Ellipse blob = new Ellipse() {Width = 2, Height = 2, Fill = Brushes.Black};
+        Ellipse blob = new Ellipse() {Width = 2, Height = 2, Fill = Brushes.MidnightBlue};
         Canvas.SetLeft(blob, gen);
         Canvas.SetBottom(blob, pop*tallRatio);
         ProgressCanvas.Children.Add(blob);
         
-        Ellipse blobAlt = new Ellipse() {Width = 2, Height = 2, Fill = Brushes.Blue};
+        Ellipse blobAlt = new Ellipse() {Width = 2, Height = 2, Fill = Brushes.DarkMagenta};
         Canvas.SetLeft(blobAlt, gen);
         Canvas.SetBottom(blobAlt, altered*tallRatio);
         ProgressCanvas.Children.Add(blobAlt);

@@ -8,7 +8,7 @@
         Title="Conway's Game of Life" Height="750" Width="825" Loaded="Window_Loaded" ResizeMode="NoResize" ContentRendered="Window_ContentRendered" Closed="Window_Closed">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="440"/>
+            <ColumnDefinition Width="640"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
@@ -23,7 +23,7 @@
             </MenuItem>
             <MenuItem x:Name="mnuObjects" Header="Objects" IsEnabled="False">
                 <MenuItem Header="Select object..." FontWeight="Medium" Click="mnuObjectSelect_Click"></MenuItem>
-                <MenuItem Header="Count still lifes in current grid" Click="mnuAnalyseStillLifes_Click"></MenuItem>
+                <MenuItem Header="Count still lifes in the current grid" Click="AnalyseStillLifesMenu_Click"></MenuItem>
                 <Separator></Separator>
                 <MenuItem Header="Edit object..." Click="mnuObjectEdit_Click"></MenuItem>
                 <MenuItem Header="Create object..." Click="mnuObjectCreate_Click"></MenuItem>
@@ -55,14 +55,15 @@
             <TextBlock x:Name="textblockPattern" DockPanel.Dock="Top" Margin="6 2" FontFamily="Comic Sans MS" FontSize="16">Pattern</TextBlock>
             <TextBlock x:Name="textblockDiscovery" DockPanel.Dock="Top" Margin="6 2" FontFamily="Comic Sans MS" FontSize="12">Pattern</TextBlock>
             <TextBlock x:Name="textblockGeneration" DockPanel.Dock="Top" Margin="2" FontFamily="Comic Sans MS" FontSize="14">Generation</TextBlock>
-            <TextBlock x:Name="textblockPopulation" DockPanel.Dock="Top" Margin="2" FontFamily="Comic Sans MS" FontSize="14">Population</TextBlock>
-            <TextBlock x:Name="textblockGenChanges" DockPanel.Dock="Top" Margin="2" FontFamily="Comic Sans MS" FontSize="14">Changed cells</TextBlock>
-            <Canvas x:Name="ProgressCanvas" DockPanel.Dock="Bottom" Height="400" Width="400" Background="DarkSeaGreen" Margin="6 0 6 4"></Canvas>
-            <TextBlock x:Name="textblockObjectDetails" DockPanel.Dock="Top" Background="Aqua" Margin="6" TextWrapping="WrapWithOverflow"></TextBlock>
-            
+            <TextBlock x:Name="textblockPopulation" DockPanel.Dock="Top" Margin="2" FontFamily="Comic Sans MS" FontSize="14" Foreground="MidnightBlue">Population</TextBlock>
+            <TextBlock x:Name="textblockGenChanges" DockPanel.Dock="Top" Margin="2" FontFamily="Comic Sans MS" FontSize="14" Foreground="DarkMagenta">Changed cells</TextBlock>
+            <Border DockPanel.Dock="Bottom" BorderBrush="LightSalmon" BorderThickness="1" Height="402" Margin="6 0 6 4">
+                <Canvas x:Name="ProgressCanvas" Height="400" Background="GhostWhite" ></Canvas>                
+            </Border>
+            <TextBlock x:Name="textblockObjectDetails" DockPanel.Dock="Top" Margin="6" TextWrapping="WrapWithOverflow"></TextBlock>
         </DockPanel>
         <ScrollViewer Grid.Row="1" Grid.Column="1">
-            <Canvas x:Name="canvasPond" Margin="0 0 0 3" Background="LightYellow"></Canvas>
+            <Canvas x:Name="PondCanvas" Margin="0 0 0 3"></Canvas>
         </ScrollViewer>
         <TextBlock Grid.Row="0" Grid.Column="2" FontFamily="Comic Sans MS" FontSize="14" VerticalAlignment="Center" Padding="6 0 0 0">Commonest still lifes</TextBlock>
         <ListBox x:Name="listboxStillLives" Grid.Column="2" Grid.Row="1">
